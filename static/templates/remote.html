@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LED Remote</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: white;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .remote {
+      background: #f5f5f5;
+      border-radius: 50px;
+      width: 90vw;
+      max-width: 400px;
+      aspect-ratio: 2 / 4;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      border-style: solid;
+      border-color: black;
+      border-width:thick;
+      display: flex;
+      flex-direction: column;
+justify-content: space-between;
+
+      align-items: center;       /* Center horizontally */
+      padding-bottom: 20px;
+      position: relative;
+    }
+
+    #logo {
+      width: 40%; /* Size of the logo */
+      height: auto;
+      opacity: 0.8;
+    }
+
+.bottom {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+.middle-bottom {
+  position: relative;
+  width: 100%;
+  height: 160px; /* match the pill height */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* align buttons to bottom of container */
+  margin-bottom: 15px;
+  gap: 30px
+}
+
+
+    .button {
+      width: 75px;
+      height: 75px;
+      border: none;
+      border-radius: 50%;
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2);
+    }
+
+    #R {
+      background-color: red;
+      color: black;
+    }
+
+    #G {
+      background-color: green;
+      color: black;
+    }
+
+    #B {
+      background-color: blue;
+      color: black;
+    }
+    #W {
+      background-color: gray;
+      color: white
+    }
+
+.duo {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* align bottom button with W */
+  align-items: center;
+  background-color: black;
+  border-radius: 40px;
+  padding: 3px;
+  gap: 10px;
+  height: 160px;
+  width: 75px;
+  border-color: black;
+  border-style:solid;
+  border-width: thin;
+}
+
+
+.color-switcher {
+  left: calc(50% - 75px - 30px); /* W center - button width - gap */
+}
+
+.brightness {
+  right: calc(50% - 75px - 30px);
+}
+
+.button img {
+  width: 100%;     /* fits nicely inside the circle */
+  height: auto;
+  pointer-events: none; /* prevent accidental clicks on the image */
+}
+
+.button img {
+  width: 80%;     /* fits nicely inside the circle */
+  height: auto;
+  pointer-events: none; /* prevent accidental clicks on the image */
+    object-fit: contain;
+    filter: invert(100%) sepia(100%) saturate(2%) hue-rotate(230deg) brightness(108%) contrast(101%);
+}
+
+#brightnessup img {
+  width: 125%;     /* make the upper sun larger */
+}
+
+.pill {
+  background-color: gray;
+  display: flex;
+  flex-direction: column; /* stack text vertically */
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;         /* smaller so it fits nicely */
+  line-height: 1.1;
+  text-align: center;
+}
+
+
+.color-wheel-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;     /* controls distance from top */
+  margin-bottom: 40px;  /* controls distance from below */
+  gap: 15px;
+}
+
+
+#colorPicker {
+  -webkit-appearance: none;
+  border: none;
+  width: 100%;
+  height: 80%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+#colorPicker::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 50%;
+}
+#colorPicker::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.hex-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+#hexInput {
+  width: 100px;
+  padding: 8px;
+  text-align: center;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+
+#sendColor {
+  padding: 8px 14px;
+  font-size: 16px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 15px;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+.status-box {
+  flex: 1;
+  background-color: #ddd;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-size: 20px;
+  color: black;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+#power {
+  background-color: gray;
+  margin: 0;
+  position: static; /* remove absolute positioning */
+}
+
+@font-face {
+  font-family: 'SundayMagic-Regular';
+  src: url('fonts/SundayMagic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.status-box {
+  font-family: 'SundayMagic-Regular', sans-serif;
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="remote">
+
+      <div class="top-row">
+  <button class="button" id="power" onclick="action('power')"><img src="/images/power.svg"></button>
+  <div class="status-box" id="statusBox">Hello! :)</div>
+</div>
+
+
+
+    
+<div class="color-wheel-section">
+  <input type="color" id="colorPicker">
+  <div class="hex-row">
+    <input type="text" id="hexInput" maxlength="7" value="#ffffff">
+    <button id="sendColor" onclick="action('customColor')">Send!</button>
+  </div>
+</div>
+
+
+
+    <div class="middle-bottom">
+
+
+      <div class="brightness duo">
+  <button class="button pill" id="brightnessup" onclick="ActionHelper('brightnessUP')"><img src="/images/sun.svg"></button>
+  <button class="button pill" id="brightnessdown" onclick="ActionHelper('brightnessDOWN')"><img src="/images/sun.svg"></button>
+</div>
+
+<button class="button" id="W" onclick="action('W')">W</button>
+
+      <div class="color-switcher duo">
+  <button class="button pill" onclick="action('colorUP')">COLOR +</button>
+  <button class="button pill" onclick="action('colorDOWN')">COLOR -</button>
+</div>
+
+    </div>
+    <div class="bottom">
+      <button class="button" id="R" onclick="action('R')">R</button>
+      <button class="button" id="G" onclick="action('G')">G</button>
+      <button class="button" id="B" onclick="action('B')">B</button>
+    </div>
+    <img src="/images/govee.svg" id="logo">
+  </div>
+</body>
+</html>
+
+
+<script>
+  //super basic rn
+  var picker = document.getElementById("colorPicker")
+  var hex = document.getElementById("hexInput")
+  
+  var statusBox = document.getElementById("statusBox")
+
+  picker.addEventListener("input", () => {
+    hex.value = picker.value
+  })
+
+    hex.addEventListener("input", () => {
+    picker.value = hex.value
+  })
+
+
+
+function sendLEDCommand(cmd, arg = null, status = cmd + " " + arg) {
+
+   fetch(`${location.protocol}//192.168.1.27:5005/led`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'  // or 'application/x-www-form-urlencoded'
+        },
+        body: JSON.stringify({
+          cmd: cmd,
+          arg: arg
+        })
+      })
+
+    statusBox.innerText = "Sent: " + status
+}
+
+
+const colorPallete = [
+  { name: "Red",     hex: "#FF0000" },
+  { name: "Green",   hex: "#00FF00" },
+  { name: "Blue",    hex: "#0000FF" },
+  { name: "Yellow",  hex: "#FFFF00" },
+  { name: "Orange",  hex: "#FFA500" },
+  { name: "Purple",  hex: "#800080" },
+  { name: "Aqua",    hex: "#00FFFF" },
+  { name: "Pink",    hex: "#FFC0CB" },
+  { name: "White",   hex: "#FFFFFF" },
+  { name: "Gray",    hex: "#808080" }
+]
+
+//basic stuff
+
+var power = "off"
+var brightness = 0.4
+var colorIndex = -1
+
+var debounceTimer = null;
+
+function debounce(fn) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(fn, 500); // adjust delay as needed
+}
+
+function action(actionType) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    ActionHelper(actionType);
+  }, 300); // 700ms after the last click
+}
+
+function ActionHelper(action) {
+
+  switch (action) {
+
+    case "power":
+      power = (power == "off" ? "on" : "off")
+      sendLEDCommand(power, null, "Power " + power)
+    break;
+
+    case "customColor":
+      sendLEDCommand("color", hex.value)
+    break;
+
+    case "brightnessUP":
+      if(brightness != 1) brightness += 0.1
+      brightness = Math.round(brightness * 100) / 100;
+      statusBox.innerText = "Sent: " + "Brightness " + brightness * 100 + "%"
+      debounce(() => {sendLEDCommand("brightness", brightness, "Brightness " + brightness * 100 + "%")})
+    break;
+
+    case "brightnessDOWN": 
+    if(brightness != 0.1) brightness -= 0.1
+     brightness = Math.round(brightness * 100) / 100;
+     statusBox.innerText = "Sent: " + "Brightness " + brightness * 100 + "%"
+      debounce(() => {sendLEDCommand("brightness", brightness, "Brightness " + brightness * 100 + "%")})
+    break;
+
+    case "colorUP":
+      if(colorIndex == 9) colorIndex = 0
+      else colorIndex++
+      sendLEDCommand("color", colorPallete[colorIndex].hex, "Color " + colorPallete[colorIndex].name)
+    break;
+
+    case "colorDOWN": 
+    if(colorIndex < 1) colorIndex = 9
+    else colorIndex--
+    sendLEDCommand("color", colorPallete[colorIndex].hex, "Color " + colorPallete[colorIndex].name)
+    break;
+
+    case "W":
+      sendLEDCommand("color", "white")
+      break;
+
+    case "R":
+      sendLEDCommand("color", "red")
+    break;
+
+    case "G":
+      sendLEDCommand("color", "green")
+    break;
+
+    case "B": 
+    sendLEDCommand("color", "blue")
+    break;
+
+  }
+
+}
+
+
+
+</script>
