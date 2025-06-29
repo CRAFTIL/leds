@@ -41,6 +41,7 @@ app.post("/connect", async (req, res) => {
     //res.send("Connected successfully!")
     res.status(200).send("Connected successfully")
     leds = response
+    leds.state = 1
     resetLed()
   } else {
     res.status(400).send("idk")
@@ -58,7 +59,7 @@ app.post("/connect", async (req, res) => {
 setInterval(() => {
   if (leds?.controlChar) {
     try {
-      const ping = powerPacket(1); // power on packet
+      const ping = powerPacket(leds.state); // power on packet
       leds.controlChar.write(ping, true); 
     } catch (err) {
       console.warn("Ping failed:", err);
@@ -80,6 +81,7 @@ app.post("/leds", (req, res) => {
 
         case "power":
           packetToSend = powerPacket(data.data)
+          leds.state = data.data
           break;
 
           case "color": 
@@ -109,6 +111,21 @@ app.get("/remote", (req, res) => {
   res.write(fs.readFileSync(path.join(__dirname, "static/html/remote.html")))
   res.end()
 })
+
+app.post("/disconnect", (req, res) => {
+  if (leds && leds.peripheral) {
+    leds.peripheral.disconnect();
+    leds = null;
+    res.status(200).send("Disconnected");
+  } else {
+    res.status(400).send("No device connected");
+  }
+});
+
+app.get("/status", (req, res) => {
+  res.json({ connected: (leds && leds?.controlChar) ? true : false });
+});
+
 
 app.listen(port, () => {
   console.log("Server running on port " + port);

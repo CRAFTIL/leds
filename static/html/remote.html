@@ -140,6 +140,15 @@ function action(actionType) {
 
 function ActionHelper(action) {
 
+  fetch("/status")
+    .then(res => res.json())
+    .then(data => {
+      if (!data.connected) {
+        window.location.href = "/disconnected"; //self explanatory
+        return;
+      }
+    });
+
   switch (action) {
 
     case "power":
@@ -194,6 +203,10 @@ function ActionHelper(action) {
   }
 
 }
+
+window.addEventListener("beforeunload", function () {
+  navigator.sendBeacon("/disconnect");
+});
 
 
 
