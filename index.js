@@ -52,14 +52,14 @@ app.post("/connect", async (req, res) => {
   }
 
   leds.peripheral.on("disconnect", () => {
-  console.warn("LED device disconnected!");
+//  console.warn("LED device disconnected!");
   leds = null;
 })
 
 setInterval(() => {
   if (leds?.controlChar) {
     try {
-      const ping = powerPacket(leds.state); // power on packet
+      const ping = powerPacket(leds.state); // Dummy packet to not disconnect
       leds.controlChar.write(ping, true); 
     } catch (err) {
       console.warn("Ping failed:", err);
@@ -126,6 +126,13 @@ app.get("/status", (req, res) => {
   res.json({ connected: (leds && leds?.controlChar) ? true : false });
 });
 
+app.get("/disconnected", (req, res) => {
+  res.redirect("/remote")
+})
+
+app.get("*", (req, res) => {
+  res.redirect("/remote")
+})
 
 app.listen(port, () => {
   console.log("Server running on port " + port);
