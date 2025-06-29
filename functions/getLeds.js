@@ -36,13 +36,21 @@ async function getLeds() {
       }
     };
 
-    function cleanup() {
-      noble.removeListener("stateChange", onStateChange);
-      noble.removeListener("discover", onDiscover);
+
+ function cleanup() {
+    noble.removeAllListeners("stateChange");
+    noble.removeAllListeners("discover");
     }
 
+    
     noble.on("stateChange", onStateChange);
     noble.on("discover", onDiscover);
+
+
+    if (noble.state === "poweredOn") {
+      noble.startScanning();
+    }
+
   });
 }
 
