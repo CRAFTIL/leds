@@ -3,14 +3,18 @@ const control = require("./controlLeds")
 const { ensureConnected } = require("./connection")
 
 /* -- helpers -- */
+const path = require("node:path");
+
+const EVENTS_PATH = path.join(__dirname, "..", "events.json");
 
 function loadEvents() {
-  return JSON.parse(fs.readFileSync("../events.json", "utf8"));
+  return JSON.parse(fs.readFileSync(EVENTS_PATH, "utf8"));
 }
 
 function saveEvents(events) {
-  fs.writeFileSync("../events.json", JSON.stringify(events, null, 4));
+  fs.writeFileSync(EVENTS_PATH, JSON.stringify(events, null, 4));
 }
+
 
 function nowHHMM() {
   return new Date().toTimeString().slice(0, 5);
