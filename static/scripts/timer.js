@@ -146,10 +146,11 @@ async function saveTimer() {
 
   const timer = {
     time,
-    days,
-    repeating: !oneTime,
     action
   };
+
+  if(oneTime) timer.repeating = false
+  else timer.days = days
 
   await fetch("/newTimer", {
     method: "POST",
