@@ -85,7 +85,7 @@ app.post("/leds", (req, res) => {
           break;
 
           case "color": 
-          control.setColor(leds, color)
+          control.setColor(leds, data)
           break;
 
           case "brightness": 
@@ -139,9 +139,11 @@ app.listen(port, () => {
 events.addEvent("test", {
   repeating: true,
   days: "all",
-  time: "21:30",
+  time: "21:33",
   action: {
-    color: "blue"
+    color: "pink",
+    brightness: 100,
+    state: 1
   }
 })
 
