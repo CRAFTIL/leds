@@ -136,7 +136,7 @@ app.listen(port, () => {
 /* -- Shaon Shabbat logic -- */
 
 //testing:
-events.addEvent("test", {
+events.addEvent("test1", {
   repeating: true,
   days: "all",
   time: "21:33",
