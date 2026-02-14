@@ -1,5 +1,3 @@
-//const noble = require("noble")
-
 const config = require("../config.json")
 const colors = require("../colorNames.json")
 

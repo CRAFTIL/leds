@@ -1,6 +1,7 @@
-const {colorPacket, brightnessPacket, powerPacket} = require("./functions/packets")
 const { getLeds } = require("./functions/getLeds")
 const { port } = require("./config.json")
+const control = require("./functions/controlLeds")
+const events = require("./events")
 
 const express = require("express")
 const app = express();
@@ -59,8 +60,8 @@ app.post("/connect", async (req, res) => {
 setInterval(() => {
   if (leds?.controlChar) {
     try {
-      const ping = powerPacket(leds.state); // Dummy packet to not disconnect
-      leds.controlChar.write(ping, true); 
+      //just a simple ping, dummy packet to not disconnect
+      control.setState(leds, leds.state, true)
     } catch (err) {
       console.warn("Ping failed:", err);
     }
@@ -75,28 +76,26 @@ app.post("/leds", (req, res) => {
   if(leds == null) res.status(400).send("Leds not connected! go to /connect first.")
     else {
   try {
-    var packetToSend;
-      const data = req.body
-      switch (data.command) {
+    const {command, data} = req.body
+
+      switch (command) {
 
         case "power":
-          packetToSend = powerPacket(data.data)
-          leds.state = data.data
+          control.setState(leds, data)
           break;
 
           case "color": 
-          packetToSend = colorPacket(data.data)
+          control.setColor(leds, color)
           break;
 
           case "brightness": 
-          packetToSend = brightnessPacket(data.data)
+          control.setBrightness(leds, data)
           break;
 
           default:
           return res.status(400).send("Invalid command");
           
       }
-      leds.controlChar.write(packetToSend)
       resetLed()
       res.status(200).send("command sent!")
     
@@ -130,10 +129,20 @@ app.get("/disconnected", (req, res) => {
   res.redirect("/remote")
 })
 
-app.get("*", (req, res) => {
-  res.redirect("/remote")
-})
-
 app.listen(port, () => {
   console.log("Server running on port " + port);
 });
+
+/* -- Shaon Shabbat logic -- */
+
+//testing:
+events.addEvent("test", {
+  repeating: true,
+  days: "all",
+  time: "21:30",
+  action: {
+    color: "blue"
+  }
+})
+
+setInterval(async () => events.shaonShabbat() , 60_000)
