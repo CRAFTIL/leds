@@ -112,6 +112,12 @@ app.get("/remote", (req, res) => {
   res.end()
 })
 
+app.get("/remote", (req, res) => {
+  res.write(fs.readFileSync(path.join(__dirname, "static/html/timer.html")))
+  res.end()
+})
+
+
 app.post("/disconnect", (req, res) => {
   if (leds && leds.peripheral) {
     leds.peripheral.disconnect();
