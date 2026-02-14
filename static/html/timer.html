@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שעון שבת</title>
+  <link rel="stylesheet" href="/static/css/timer.css">
+</head>
+<body>
+  <div class="timer-dashboard">
+
+    <div class="timer-header">
+      <h1>שעון שבת ללדים</h1>
+      <button class="add-timer-btn" onclick="addTimer()">+</button>
+    </div>
+
+    <div class="timer-list" id="timerList">
+      <!-- timers will populate here -->
+    </div>
+
+  </div>
+
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <h2>הוסף שעון</h2>
+
+<!-- Timer Name -->
+<label for="timerName">שם</label>
+<input type="text" id="timerName" placeholder="שישי בערב" class="timer-name-input">
+
+<!-- Action toggle -->
+<label>פעולה</label>
+<div class="state-toggle" id="timerState">
+  <button type="button" data-value="on" class="active">הדלק</button>
+  <button type="button" data-value="off">כבה</button>
+</div>
+
+    <!-- Time -->
+    <label for="timerTime">שעה</label>
+    <input type="time" id="timerTime" value="12:00">
+
+    <!-- One-time -->
+    <div class="one-time-container" id="oneTimeContainer">
+      <label for="oneTime">חד פעמי</label>
+      <input type="checkbox" id="oneTime" onchange="updateModalFields()">
+    </div>
+
+    <!-- Days -->
+    <label id="daysLabel">ימים</label>
+    <label id="allDaysRow" class="all-days-row">
+  <input type="checkbox" id="allDays" value="all">
+  כל יום
+</label>
+
+<div class="days-container" id="daysContainer">
+  <label><input type="checkbox" value="1">ראשון</label>
+  <label><input type="checkbox" value="2">שני</label>
+  <label><input type="checkbox" value="3">שלישי</label>
+  <label><input type="checkbox" value="4">רביעי</label>
+  <label><input type="checkbox" value="5">חמישי</label>
+  <label><input type="checkbox" value="6">שישי</label>
+  <label><input type="checkbox" value="7">שבת</label>
+</div>
+
+
+    <div class="optional-field" id="optionals">
+        <!-- Optional Color with text input inside circle -->
+        <label><input type="checkbox" id="useColor" onchange="updateModalFields()"> צבע</label>
+<div class="optional-field" id="colorField">
+  <div class="color-wrapper">
+    <input type="color" id="timerColor" value="#ffffff" onchange="updateColorText()">
+    <input type="text" id="colorText" placeholder="#ffffff" onchange="updateColor()">
+  </div>
+</div>
+
+
+    <!-- Optional Brightness -->
+     <label><input type="checkbox" id="useBrightness" onchange="updateModalFields()"> בהירות</label>
+    <div class="optional-field" id="brightnessField">
+  <input type="range" id="timerBrightness" value="100" min="1" max="100" oninput="updateBrightnessLabel()">
+  <span id="brightnessValue">100%</span>
+</div>
+
+    </div>
+
+    <button onclick="saveTimer()">שמור שעון שבת</button>
+  </div>
+</div>
+
+
+<script src="/static/scripts/color2rgb.js"></script>
+<script src="/static/scripts/timer.js"></script>
+
+
+
+
+</body>
+</html>

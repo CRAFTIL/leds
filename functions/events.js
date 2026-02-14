@@ -1,15 +1,15 @@
 const fs = require("node:fs")
-const control = require("./functions/controlLeds")
+const control = require("./controlLeds")
 const { ensureConnected } = require("./connection")
 
 /* -- helpers -- */
 
 function loadEvents() {
-  return JSON.parse(fs.readFileSync("./events.json", "utf8"));
+  return JSON.parse(fs.readFileSync("../events.json", "utf8"));
 }
 
 function saveEvents(events) {
-  fs.writeFileSync("./events.json", JSON.stringify(events, null, 4));
+  fs.writeFileSync("../events.json", JSON.stringify(events, null, 4));
 }
 
 function nowHHMM() {

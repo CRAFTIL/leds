@@ -1,0 +1,465 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: white;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'SundayMagic-Regular', sans-serif;
+}
+
+.timer-dashboard {
+  background: #f5f5f5;
+  border-radius: 50px;
+  width: 95vw;
+  max-width: 600px;       /* slightly wider */
+  aspect-ratio: auto;     /* flexible height */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  border-style: solid;
+  border-color: black;
+  border-width: thick;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.timer-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timer-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.add-timer-btn {
+  font-size: 30px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.timer-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.timer-item {
+  background-color: white;
+  border-radius: 25px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.timer-item span {
+  font-size: 18px;
+}
+
+.delete-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: none; /* hidden by default */
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+/* modal content */
+.modal {
+  background-color: #f5f5f5;
+  border-radius: 50px;
+  width: 90vw;
+  max-width: 400px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+}
+
+.modal h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.modal label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.modal input[type="time"],
+.modal input[type="color"],
+.modal input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+  font-size: 16px;
+}
+
+.modal .days-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.modal .days-container label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.modal .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  background: none;
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+
+/* modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+/* modal content */
+.modal {
+  background-color: #f5f5f5;
+  border-radius: 50px;
+  width: 90vw;
+  max-width: 400px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  position: relative;
+}
+
+.modal h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.modal label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Inputs */
+.modal input[type="time"],
+.modal input[type="number"],
+.modal input[type="color"],
+.modal input[type="range"] {
+  width: 80%;
+  padding: 8px;
+  border-radius: 15px;
+  border: 2px solid #ccc;
+  font-size: 16px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Big circular color picker */
+.modal input[type="color"] {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid #aaa;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+/* Days container centered */
+.modal .days-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.modal .days-container label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+/* Buttons */
+.modal button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.modal .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  font-weight: bold;
+  background: none;
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+/* One-time checkbox */
+.modal .one-time-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+#timerColor {
+  -webkit-appearance: none;
+  border: none;
+  width: 120px;           /* size of the circle */
+  height: 120px;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  overflow: hidden;
+}
+
+#timerColor::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 50%;
+}
+
+#timerColor::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.color-wrapper {
+  position: relative;
+  width: 80px;       /* circle size */
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+border-style: solid;
+}
+
+/* Hide the default color input's border, make it fill the circle */
+.color-wrapper input[type="color"] {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+/* Some browsers need this to remove default inner shadow */
+.color-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+  
+}
+.color-wrapper input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+/* Text input inside circle */
+.color-wrapper input[type="text"] {
+  position: absolute;
+  width: 70%;
+  text-align: center;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: auto;
+  border-style: solid;
+}
+
+/* name input */
+.timer-name-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+/* segmented toggle */
+.state-toggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.state-toggle button {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.15s;
+}
+
+.state-toggle button.active {
+  background: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+.state-toggle button:last-child.active {
+  background: #e53935;
+  border-color: #e53935;
+}
+
+.modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal .days-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 per row */
+  gap: 6px;
+  width: 100%;
+  justify-items: center;
+  grid-template-columns: repeat(2, 1fr);
+
+}
+
+#optionals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  align-items: start;
+}
+
+.modal {
+  gap: 12px;
+  padding: 18px;
+}
+
+.color-wrapper {
+  width: 70px;
+  height: 70px;
+}
+.modal .days-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 per row */
+  gap: 8px;
+  width: 100%;
+  justify-items: center;
+}
+
+.modal .days-container label {
+  width: auto;          /* ← IMPORTANT FIX */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  justify-content: center;
+}
+
+.all-days-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+}
+
+.days-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  justify-items: center;
+}
+
+
+
+

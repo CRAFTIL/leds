@@ -1,7 +1,8 @@
 const { getLeds } = require("./functions/getLeds")
 const { port } = require("./config.json")
 const control = require("./functions/controlLeds")
-const events = require("./events")
+const events = require("./functions/events")
+const {color2rgb} = require("./functions/packets")
 
 const express = require("express")
 const app = express();
@@ -135,16 +136,35 @@ app.listen(port, () => {
 
 /* -- Shaon Shabbat logic -- */
 
-//testing:
-events.addEvent("test1", {
-  repeating: true,
-  days: "all",
-  time: "21:33",
-  action: {
-    color: "pink",
-    brightness: 100,
-    state: 1
-  }
+app.get("/getAllTimers", (req, res) => {
+  const events = JSON.parse(fs.readFileSync("./events.json", "utf8"));
+  return res.json(events)
 })
+
+app.post("/newTimer", (req, res) => {
+  try {
+    const body = req.body;
+
+    if (!body.id || !body.timer?.time)
+      return res.status(400).send("Invalid request");
+
+    events.addEvent(body.id, body.timer);
+
+    res.status(200).send("saved the new timer!");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+app.post("/deleteTimer", (req, res) => {
+  try {
+    events.removeEvent(req.body.id);
+    res.status(200).send("deleted");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+
 
 setInterval(async () => events.shaonShabbat() , 60_000)

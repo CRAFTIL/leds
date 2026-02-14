@@ -1,4 +1,4 @@
-const { getLeds } = require("./functions/getLeds");
+const { getLeds } = require("./getLeds");
 
 var leds = null;
 var ledTimeout = null;
