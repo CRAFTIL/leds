@@ -24,10 +24,13 @@ function color2rgb(color) {
 }
 
 
-function buildPacket(command, payload) { 
+function buildPacket(command, payload, starter) { 
+
+    if (!starter) starter = config.starter
+
     if(typeof command == "string") command = config.commands[command] //power, brightness, color
 
-    var frame = [config.starter, command, ...payload] //basic data
+    var frame = [starter, command, ...payload] //basic data
 
     let amount = 19 - frame.length //padding
 
@@ -76,5 +79,6 @@ function powerPacket(power) { //on or off, 1 or 0
 module.exports = {
     colorPacket,
     brightnessPacket,
-    powerPacket
+    powerPacket,
+    buildPacket
 }

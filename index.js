@@ -93,6 +93,14 @@ app.post("/leds", (req, res) => {
           control.setBrightness(leds, data)
           break;
 
+          case "custom":
+          control.sendCustomCommand(leds, data)
+          break;
+
+          case "buildCustom":
+          control.buildCustomCommand(leds, ...data)
+          break;
+
           default:
           return res.status(400).send("Invalid command");
           

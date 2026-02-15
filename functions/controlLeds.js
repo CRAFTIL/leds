@@ -1,4 +1,4 @@
-const {colorPacket, brightnessPacket, powerPacket} = require("./packets")
+const {colorPacket, brightnessPacket, powerPacket, buildPacket} = require("./packets")
 
 function setColor(leds, color) {
     const packet = colorPacket(color)
@@ -51,6 +51,24 @@ function doAction(leds, action = {}) {
     }
 }
 
+function convertString(string) {
+       return new Uint8Array(
+             string.match(/[\da-f]{2}/gi).map(function (h) {
+                 return parseInt(h, 16);
+            })
+        );
+ }
+
+function sendCustomCommand(leds, command) {
+    const packet = Buffer.from(convertString(command))
+    leds.controlChar.write(packet)
+}
+
+function buildCustomCommand(leds, command, payload, starter) {
+    const packet = buildPacket(command, payload, starter)
+    leds.controlChar.write(packet)
+}
+
 module.exports = {
-    setColor, setBrightness, setState, turnOff, turnOn, doAction
+    setColor, setBrightness, setState, turnOff, turnOn, doAction, sendCustomCommand, buildCustomCommand
 }
