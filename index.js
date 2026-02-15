@@ -60,7 +60,7 @@ app.post("/connect", async (req, res) => {
 setInterval(() => {
   if (leds?.controlChar) {
     try {
-      control.sendCustomCommand("aa010000000000000000000000000000000000ab") //keep alive packet
+      control.sendCustomCommand(leds, "aa010000000000000000000000000000000000ab") //keep alive packet
     } catch (err) {
       console.warn("Ping failed:", err);
     }
