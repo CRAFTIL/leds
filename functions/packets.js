@@ -30,7 +30,11 @@ function buildPacket(command, payload, starter) {
 
     if(typeof command == "string") command = config.commands[command] //power, brightness, color
 
-    var frame = [starter, command, ...payload] //basic data
+    if (!Array.isArray(command)) {
+        command = [command];
+    }
+
+    var frame = [starter, ...command, ...payload] //basic data
 
     let amount = 19 - frame.length //padding
 
