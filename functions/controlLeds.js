@@ -66,6 +66,11 @@ function buildCustomCommand(leds, command, payload) {
     leds.controlChar.write(packet)
 }
 
+function setScene(leds, sceneId) {
+    const packet = scenePacket(sceneId)
+    leds.controlChar.write(packet)
+}
+
 module.exports = {
-    setColor, setBrightness, setState, turnOff, turnOn, doAction, sendCustomCommand, buildCustomCommand
+    setColor, setBrightness, setState, turnOff, turnOn, doAction, sendCustomCommand, buildCustomCommand, setScene
 }

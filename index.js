@@ -99,6 +99,10 @@ app.post("/leds", (req, res) => {
           control.buildCustomCommand(leds, data.command, data.payload)
           break;
 
+          case "scene":
+          control.setScene(leds, data)
+          break;
+
           default:
           return res.status(400).send("Invalid command");
           

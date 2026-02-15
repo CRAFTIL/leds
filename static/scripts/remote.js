@@ -197,3 +197,24 @@ async function sendCustomCommand(data) {
     console.error("Request failed:", err);
   }
 }
+
+async function setScene(data) {
+  try {
+    const res = await fetch("/leds", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        command: "scene",
+        data: data
+      })
+    });
+
+    const text = await res.text();
+    console.log("Server response:", text);
+    return text;
+  } catch (err) {
+    console.error("Request failed:", err);
+  }
+}

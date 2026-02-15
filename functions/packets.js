@@ -79,10 +79,16 @@ function powerPacket(power) { //on or off, 1 or 0
     return buildPacket("power", [power])
 }
 
+function scenePacket(sceneId) {
+    const command = [0x5, 0x4]
+    const payload = [sceneId]
+    return buildPacket(command, payload)
+}
 
 module.exports = {
     colorPacket,
     brightnessPacket,
     powerPacket,
+    scenePacket,
     buildPacket
 }
