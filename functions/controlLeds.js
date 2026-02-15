@@ -61,8 +61,8 @@ function sendCustomCommand(leds, command) {
     leds.controlChar.write(packet)
 }
 
-function buildCustomCommand(leds, command, payload, starter) {
-    const packet = buildPacket(command, payload, starter)
+function buildCustomCommand(leds, command, payload) {
+    const packet = buildPacket(command, payload)
     leds.controlChar.write(packet)
 }
 

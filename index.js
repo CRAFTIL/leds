@@ -96,7 +96,7 @@ app.post("/leds", (req, res) => {
           break;
 
           case "buildCustom":
-          control.buildCustomCommand(leds, ...data)
+          control.buildCustomCommand(leds, data.command, data.payload)
           break;
 
           default:
