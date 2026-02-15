@@ -200,7 +200,7 @@ function updateColorText() {
     document.getElementById("colorText").value = color
 }
 
-renderTimers();
+loadTimers();
 updateModalFields();
 
 
