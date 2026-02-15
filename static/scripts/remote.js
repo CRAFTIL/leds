@@ -152,3 +152,48 @@ window.addEventListener("beforeunload", function () {
 });
 
 
+/* for frontend console playing */
+
+let commands = {
+    "turnOn": "3301010000000000000000000000000000000033",
+    "turnOff": "3301000000000000000000000000000000000032",
+    "keepAlive": "aa010000000000000000000000000000000000ab",
+    //music
+    "energetic": "3305130563000000000000000000000000000043",
+    "spectrum": "3305130463000000000000000000000000000042",
+    "rythm": "3305130363000000000000000000000000000045",
+    "separation": "3305133263000000000000000000000000000074",
+    "rolling": "3305130663000000000000000000000000000040",
+
+    //scenes
+    "sunrise": "3305040000000000000000000000000000000032",
+    "sunset": "3305040100000000000000000000000000000033",
+    "movie": "3305040400000000000000000000000000000036",
+    "dating": "3305040500000000000000000000000000000037",
+    "romantic": "3305040700000000000000000000000000000035",
+    "blinking": "330504080000000000000000000000000000003a",
+    "candlelight": "330504090000000000000000000000000000003b",
+    "snowflake": "3305040f0000000000000000000000000000003d",
+    "rainbow": "3305041600000000000000000000000000000024"
+}
+
+async function sendCustomCommand(data) {
+  try {
+    const res = await fetch("/leds", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        command: "custom",
+        data: data
+      })
+    });
+
+    const text = await res.text();
+    console.log("Server response:", text);
+    return text;
+  } catch (err) {
+    console.error("Request failed:", err);
+  }
+}
