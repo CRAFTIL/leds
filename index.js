@@ -25,7 +25,7 @@ function resetLed() {
       leds.peripheral.disconnect();
       leds = null; // cleanup reference 
     }
-  }, 1000 * 60 * 2)
+  }, 1000 * 60 * 5)
 }
 
 
@@ -43,7 +43,6 @@ app.post("/connect", async (req, res) => {
     //res.send("Connected successfully!")
     res.status(200).send("Connected successfully")
     leds = response
-    leds.state = 1
     resetLed()
   } else {
     res.status(400).send("idk")
@@ -61,8 +60,7 @@ app.post("/connect", async (req, res) => {
 setInterval(() => {
   if (leds?.controlChar) {
     try {
-      //just a simple ping, dummy packet to not disconnect
-      control.setState(leds, leds.state, true)
+      control.sendCustomCommand("aa010000000000000000000000000000000000ab") //keep alive packet
     } catch (err) {
       console.warn("Ping failed:", err);
     }

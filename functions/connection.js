@@ -25,8 +25,6 @@ async function ensureConnected() {
   // connect
   leds = await getLeds();
 
-  leds.state = 1;
-
   leds.peripheral.on("disconnect", () => {
     leds = null;
   });

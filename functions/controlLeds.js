@@ -8,13 +8,11 @@ function setColor(leds, color) {
 function turnOn(leds) {
     const packet = powerPacket(true)
     leds.controlChar.write(packet)
-    leds.state = 1
 }
 
 function turnOff(leds) {
     const packet = powerPacket(false)
     leds.controlChar.write(packet)
-    leds.state = 0
 }
 
 function setBrightness(leds, brightness) {
@@ -25,7 +23,6 @@ function setBrightness(leds, brightness) {
 function setState(leds, state, whateverThisIs = false) {
     const packet = powerPacket(state)
     whateverThisIs ? leds.controlChar.write(packet, true) : leds.controlChar.write(packet)
-    leds.state = state
 }
 
 function doAction(leds, action = {}) {
@@ -38,7 +35,7 @@ function doAction(leds, action = {}) {
         return; // nothing else matters
     }
 
-    if (state === true && leds.state !== 1) {
+    if (state === true) {
         turnOn(leds);
     }
 
