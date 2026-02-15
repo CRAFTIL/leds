@@ -1,4 +1,4 @@
-const {colorPacket, brightnessPacket, powerPacket, buildPacket} = require("./packets")
+const {colorPacket, brightnessPacket, powerPacket, buildPacket, scenePacket} = require("./packets")
 
 function setColor(leds, color) {
     const packet = colorPacket(color)
