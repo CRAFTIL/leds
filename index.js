@@ -52,7 +52,7 @@ app.post("/connect", async (req, res) => {
     res.status(500).send(err)
   }
 
-  leds.peripheral.on("disconnect", () => {
+  leds.peripheral.once("disconnect", () => {
 //  console.warn("LED device disconnected!");
   leds = null;
 })
