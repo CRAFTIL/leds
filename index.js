@@ -68,11 +68,12 @@ app.post("/connect", async (req, res) => {
   }
 
   } catch (err) {
-    res.status(500).send(err)
+    console.error("Connection error:" + err)
+    res.status(500).send(err.toString())
   }
 
   leds?.peripheral?.once("disconnect", () => {
-  console.log("LEds now disconnecting!!")
+  // console.log("LEds now disconnecting!!")
   leds = null;
   if (ledTimeout) {
     clearTimeout(ledTimeout);
@@ -199,4 +200,10 @@ app.post("/deleteTimer", (req, res) => {
 
 
 
-setInterval(async () => events.shaonShabbat() , 60_000)
+setInterval(async () => {
+  try {
+    await events.shaonShabbat()
+  } catch (err) {
+    console.error("shaonShabbat error:", err)
+  }
+}, 60_000)
