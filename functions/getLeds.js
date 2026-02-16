@@ -1,3 +1,8 @@
+const { UUID_CONTROL_CHARACTERISTIC, led_mac } = require("../config.json");
+const noble = require("../../noble/index");
+
+const TIMEOUT = 20000
+
 async function getLeds() {
   return new Promise((resolve, reject) => {
     let timer;
