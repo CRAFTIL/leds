@@ -16,9 +16,12 @@ app.use("/static", express.static(path.join(__dirname, "static")));
 
 var leds = null
 var ledTimeout = null;
+var ledKeepAlive = null;
+
 function resetLed() {
   if (ledTimeout) {
     clearTimeout(ledTimeout);
+    ledTimeout = null;
   }
   ledTimeout = setTimeout(() => {
     if (leds && leds.peripheral) {
@@ -26,6 +29,22 @@ function resetLed() {
       leds = null; // cleanup reference 
     }
   }, 1000 * 60 * 5)
+
+    if (ledKeepAlive) {
+    clearInterval(ledKeepAlive);
+    ledKeepAlive = null;
+  }
+
+  ledKeepAlive = setInterval(() => {
+  if (leds?.controlChar) {
+    try {
+      control.sendCustomCommand(leds, "aa010000000000000000000000000000000000ab") //keep alive packet
+    } catch (err) {
+      console.warn("Ping failed:", err);
+    }
+  }
+}, 5000); // every 5 seconds
+
 }
 
 
@@ -52,21 +71,18 @@ app.post("/connect", async (req, res) => {
     res.status(500).send(err)
   }
 
-  leds.peripheral.once("disconnect", () => {
-//  console.warn("LED device disconnected!");
+  leds?.peripheral?.once("disconnect", () => {
+  console.log("LEds now disconnecting!!")
   leds = null;
-})
-
-setInterval(() => {
-  if (leds?.controlChar) {
-    try {
-      control.sendCustomCommand(leds, "aa010000000000000000000000000000000000ab") //keep alive packet
-    } catch (err) {
-      console.warn("Ping failed:", err);
-    }
+  if (ledTimeout) {
+    clearTimeout(ledTimeout);
+    ledTimeout = null;
   }
-}, 5000); // every 5 seconds
-
+  if (ledKeepAlive) {
+    clearInterval(ledKeepAlive);
+    ledKeepAlive = null;
+  }
+})
 
 })
 
