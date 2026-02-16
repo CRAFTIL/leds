@@ -82,3 +82,5 @@ async function getLeds() {
     }
   });
 }
+
+module.exports = { getLeds }
