@@ -4,14 +4,19 @@ const control = require("./functions/controlLeds")
 const events = require("./functions/events")
 const {color2rgb} = require("./functions/packets")
 
+const timestamp = () => new Date().toLocaleString("he-il").replace(",", " |")
+const log = (stuff) => console.log("$ " +  timestamp() + " $: " + stuff)
+
 const express = require("express")
 const app = express();
 app.use(express.json()); // Add this at the top
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { time } = require("node:console")
 
 app.use("/static", express.static(path.join(__dirname, "static")));
+
 
 
 var leds = null
@@ -27,6 +32,7 @@ function resetLed() {
     if (leds && leds.peripheral) {
       leds.peripheral.disconnect();
       leds = null; // cleanup reference 
+      log("Disconnected due to inactivity")
     }
   }, 1000 * 60 * 5)
 
@@ -63,6 +69,7 @@ app.post("/connect", async (req, res) => {
     res.status(200).send("Connected successfully")
     leds = response
     resetLed()
+    log("Connected!")
   } else {
     res.status(400).send("idk")
   }
@@ -150,6 +157,7 @@ app.post("/disconnect", (req, res) => {
     leds.peripheral.disconnect();
     leds = null;
     res.status(200).send("Disconnected");
+    log("Deliberatly disconnected, called /disconnect")
   } else {
     res.status(400).send("No device connected");
   }
