@@ -80,7 +80,7 @@ app.post("/connect", async (req, res) => {
   }
 
   leds?.peripheral?.once("disconnect", () => {
-  // console.log("LEds now disconnecting!!")
+  log("Disconnecting, unknown reason")
   leds = null;
   if (ledTimeout) {
     clearTimeout(ledTimeout);

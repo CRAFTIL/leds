@@ -2,27 +2,27 @@ const {colorPacket, brightnessPacket, powerPacket, buildPacket, scenePacket} = r
 
 function setColor(leds, color) {
     const packet = colorPacket(color)
-    leds.controlChar.write(packet)
+    leds.controlChar.write(packet, true)
 }
 
 function turnOn(leds) {
     const packet = powerPacket(true)
-    leds.controlChar.write(packet)
+    leds.controlChar.write(packet, true)
 }
 
 function turnOff(leds) {
     const packet = powerPacket(false)
-    leds.controlChar.write(packet)
+    leds.controlChar.write(packet, true)
 }
 
 function setBrightness(leds, brightness) {
     const packet = brightnessPacket(brightness)
-    leds.controlChar.write(packet)
+    leds.controlChar.write(packet, true)
 }
 
-function setState(leds, state, whateverThisIs = false) {
+function setState(leds, state) {
     const packet = powerPacket(state)
-    whateverThisIs ? leds.controlChar.write(packet, true) : leds.controlChar.write(packet)
+    leds.controlChar.write(packet, true)
 }
 
 function doAction(leds, action = {}) {
@@ -58,17 +58,17 @@ function convertString(string) {
 
 function sendCustomCommand(leds, command) {
     const packet = Buffer.from(convertString(command))
-    leds.controlChar.write(packet)
+    leds.controlChar.write(packet, true)
 }
 
 function buildCustomCommand(leds, command, payload) {
     const packet = buildPacket(command, payload)
-    leds.controlChar.write(packet)
+    leds.controlChar.write(packet, true)
 }
 
 function setScene(leds, sceneId) {
     const packet = scenePacket(sceneId)
-    leds.controlChar.write(packet)
+    leds.controlChar.write(packet, true)
 }
 
 module.exports = {
