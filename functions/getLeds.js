@@ -1,56 +1,27 @@
 const { UUID_CONTROL_CHARACTERISTIC, led_mac } = require("../config.json");
 const noble = require("../../noble/index");
 
-const TIMEOUT = 20000
-
 async function getLeds() {
-  return new Promise((resolve, reject) => {
-    let timer;
-    let resolved = false; // Add this flag
 
+  return new Promise((resolve, reject) => {
     const onDiscover = (peripheral) => {
       const mac = peripheral.address.toLowerCase();
       if (mac === led_mac.toLowerCase()) {
         noble.stopScanning();
 
         peripheral.connect((err) => {
-          if (err) {
-            cleanup()
-            if (!resolved) {
-              resolved = true;
-              return reject("Failed to connect: " + err);
-            }
-            return;
-          }
+          if (err) return stop("Failed to connect: " + err, false);
 
           peripheral.discoverAllServicesAndCharacteristics((err, services, characteristics) => {
-            if (err) {
-              cleanup()
-              if (!resolved) {
-                resolved = true;
-                return reject("Discovery error: " + err);
-              }
-              return;
-            }
+            if (err) return stop("Discovery error: " + err, false);
 
             const controlChar = characteristics.find(
               (c) => c.uuid === UUID_CONTROL_CHARACTERISTIC.replaceAll("-", "")
             );
 
-            if (!controlChar) {
-              cleanup()
-              if (!resolved) {
-                resolved = true;
-                return reject("Control characteristic not found!");
-              }
-              return;
-            }
+            if (!controlChar) return stop("Control characteristic not found!", false);
 
-            cleanup();
-            if (!resolved) {
-              resolved = true;
-              resolve({controlChar, peripheral});
-            }
+            stop({controlChar, peripheral}, true); //returning both so the main func can disconnect later
           });
         });
       }
@@ -64,28 +35,28 @@ async function getLeds() {
       }
     };
 
-    function cleanup() {
-      clearTimeout(timer)
-      noble.stopScanning()
-      noble.removeAllListeners("stateChange");
-      noble.removeAllListeners("discover");
+
+ function cleanup() {
+    noble.stopScanning()
+    noble.removeAllListeners("stateChange");
+    noble.removeAllListeners("discover");
     }
 
-    timer = setTimeout(() => {
-      cleanup();
-      if (!resolved) {
-        resolved = true;
-        reject("LED device not found (timeout)");
-      }
-    }, TIMEOUT);
+    function stop(stuff, success) {
+      cleanup()
+      success ? resolve(stuff) : reject(stuff)
+    }
 
     noble.on("stateChange", onStateChange);
     noble.on("discover", onDiscover);
 
+
     if (noble.state === "poweredOn") {
       noble.startScanning();
     }
+
   });
 }
 
-module.exports = { getLeds }
+
+module.exports = { getLeds }    
