@@ -146,11 +146,19 @@ async function saveTimer() {
 
   const timer = {
     time,
-    action
+    action,
+    repeating: (oneTime ? false : true),
+    days: (oneTime ? [] : days)
   };
 
-  if(oneTime) timer.repeating = false
-  else timer.days = days
+  // //timer.repeating = oneTime ? false : true
+  // if(oneTime) {
+  //   timer.repeating = false
+  //   timer.days = []
+  // }
+  // else {
+  //   timer.days = days
+  // }
 
   await fetch("/newTimer", {
     method: "POST",
@@ -170,7 +178,7 @@ function renderTimers() {
     const div = document.createElement("div");
     div.className = "timer-item";
     div.innerHTML = `
-      <span>${timer.time} | ${Array.isArray(timer.days) ? timer.days.join(",") : timer.days} | ${JSON.stringify(timer.action)}</span>
+      <span>${timer.time} | ${timer.repeating ? timer.days : "one time"} | ${JSON.stringify(timer.action)}</span>
       <button class="delete-btn" onclick="removeTimer('${timer.id}')">×</button>
     `;
     timerList.appendChild(div);
