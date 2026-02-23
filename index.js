@@ -1,11 +1,10 @@
-const { getLeds } = require("./functions/getLeds")
+const { ensureConnected, disconnect, isConnected } = require("./functions/connection")
 const { port } = require("./config.json")
 const control = require("./functions/controlLeds")
 const events = require("./functions/events")
-const {color2rgb} = require("./functions/packets")
 
-const timestamp = () => new Date().toLocaleString("he-il").replace(",", " |")
-const log = (stuff) => console.log("$ " +  timestamp() + " $: " + stuff)
+// const timestamp = () => new Date().toLocaleString("he-il").replace(",", " |")
+// const log = (stuff) => console.log("$ " +  timestamp() + " $: " + stuff)
 
 const express = require("express")
 const app = express();
@@ -13,91 +12,21 @@ app.use(express.json()); // Add this at the top
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { time } = require("node:console")
 
 app.use("/static", express.static(path.join(__dirname, "static")));
 
-
-
-var leds = null
-var ledTimeout = null;
-var ledKeepAlive = null;
-
-function resetLed() {
-  if (ledTimeout) {
-    clearTimeout(ledTimeout);
-    ledTimeout = null;
-  }
-  ledTimeout = setTimeout(() => {
-    if (leds && leds.peripheral) {
-      leds.peripheral.disconnect();
-      leds = null; // cleanup reference 
-      log("Disconnected due to inactivity")
-    }
-  }, 1000 * 60 * 5)
-
-    if (ledKeepAlive) {
-    clearInterval(ledKeepAlive);
-    ledKeepAlive = null;
-  }
-
-  ledKeepAlive = setInterval(() => {
-  if (leds?.controlChar) {
-    try {
-      control.sendCustomCommand(leds, "aa010000000000000000000000000000000000ab") //keep alive packet
-    } catch (err) {
-      console.warn("Ping failed:", err);
-    }
-  }
-}, 5000); // every 5 seconds
-
-}
-
-
 app.post("/connect", async (req, res) => {
-
-  if(leds && leds?.controlChar)  {
-    res.status(200).send("Connected successfully")
-    resetLed()
-    return;
-  }
-
   try {
-    const response = await getLeds()
-   if(response) {
-    //res.send("Connected successfully!")
+    await ensureConnected()
     res.status(200).send("Connected successfully")
-    leds = response
-    resetLed()
-    log("Connected!")
-  } else {
-    res.status(400).send("idk")
-  }
-
-  } catch (err) {
-    console.error("Connection error:" + err)
+  } catch(err) {
     res.status(500).send(err.toString())
   }
-
-  leds?.peripheral?.once("disconnect", () => {
-  log("Disconnecting, unknown reason")
-  leds = null;
-  if (ledTimeout) {
-    clearTimeout(ledTimeout);
-    ledTimeout = null;
-  }
-  if (ledKeepAlive) {
-    clearInterval(ledKeepAlive);
-    ledKeepAlive = null;
-  }
 })
 
-})
-
-
-app.post("/leds", (req, res) => {
-  if(leds == null) res.status(400).send("Leds not connected! go to /connect first.")
-    else {
+app.post("/leds", async (req, res) => {
+  var leds = await ensureConnected()
+  //if(leds == null) res.status(400).send("Leds not connected! go to /connect first.")
   try {
     const {command, data} = req.body
 
@@ -131,13 +60,11 @@ app.post("/leds", (req, res) => {
           return res.status(400).send("Invalid command");
           
       }
-      resetLed()
       res.status(200).send("command sent!")
     
   } catch (err) {
     res.status(500).send(err)
   }
-}
 })
 
 
@@ -153,18 +80,12 @@ app.get("/timers", (req, res) => {
 
 
 app.post("/disconnect", (req, res) => {
-  if (leds && leds.peripheral) {
-    leds.peripheral.disconnect();
-    leds = null;
-    res.status(200).send("Disconnected");
-    log("Deliberatly disconnected, called /disconnect")
-  } else {
-    res.status(400).send("No device connected");
-  }
+  disconnect()
+  res.status(200).send("Disconnected")
 });
 
 app.get("/status", (req, res) => {
-  res.json({ connected: (leds && leds?.controlChar) ? true : false });
+  res.json({ connected: isConnected() });
 });
 
 app.get("/disconnected", (req, res) => {

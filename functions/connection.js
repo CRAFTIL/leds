@@ -1,24 +1,59 @@
 const { getLeds } = require("./getLeds");
+const control = require("./controlLeds")
+const {ledTimeoutMS, ledKeepAliveMS, keepAlivePacket} = require("../config.json")
+
 
 var leds = null;
-var ledTimeout = null;
+var inactivityTimeout = null;
+var keepAliveInterval = null;
 
-function resetTimer() {
-  if (ledTimeout) clearTimeout(ledTimeout);
+function clearTimers() {
+  clearTimeout(inactivityTimeout)
+  clearInterval(keepAliveInterval)
+  inactivityTimeout = null
+  keepAliveInterval = null
+}
 
-  ledTimeout = setTimeout(() => {
-    if (leds?.peripheral) {
-      leds.peripheral.disconnect();
-    }
-    leds = null;
-  }, 1000 * 60 * 2);
+function resetTimers() {
+  clearTimers()
+  
+  inactivityTimeout = setTimeout(() => {
+    disconnect()
+  }, ledTimeoutMS)
+
+  keepAliveInterval = setInterval(() => {
+    keepAlive()
+  }, ledKeepAliveMS)
+
+}
+
+function disconnect() {
+  if(!isConnected()) return;
+  leds?.peripheral?.disconnect()
+  leds = null
+  clearTimers()
+}
+
+function keepAlive() {
+  if(!isConnected()) return false; //should i connect here?
+  control.sendCustomCommand(leds, keepAlivePacket)
+}
+
+// function sendPacket(packet) {
+//   if(!isConnected()) return false
+//   leds.controlChar.write(packet, true)
+//   return true
+// }
+
+function isConnected() {
+  return !!(leds?.controlChar)
 }
 
 
 async function ensureConnected() {
   // if already connected
-  if (leds?.controlChar) {
-    resetTimer();
+  if (isConnected()) {
+    resetTimers();
     return leds;
   }
 
@@ -26,20 +61,17 @@ async function ensureConnected() {
   leds = await getLeds();
 
   leds.peripheral.once("disconnect", () => {
+    clearTimers()
     leds = null;
   });
 
-  resetTimer();
+  resetTimers();
 
-  return leds;
-}
-
-
-function getCurrent() {
   return leds;
 }
 
 module.exports = {
   ensureConnected,
-  getCurrent
+  disconnect,
+  isConnected
 };
