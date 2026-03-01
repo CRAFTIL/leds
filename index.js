@@ -136,3 +136,28 @@ setInterval(async () => {
     console.error("shaonShabbat error:", err)
   }
 }, 60_000)
+
+
+/* MISSILE ALERTS! */
+
+const {setup, getAlert} = require("./functions/azakot")
+var alertInterval;
+setup().then(() => {
+  alertInterval = setInterval(() => getAlert(handleAlert), 1000);
+})
+
+const handleAlert = (category) => {
+  switch (category) {
+    case 1:
+      //MISSILE!!!
+    break;
+
+    case 13:
+      //safe to come out
+    break;
+
+    case 14:
+      //missile alert soon
+    break;
+  }
+}

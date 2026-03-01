@@ -58,7 +58,7 @@ async function shaonShabbat() {
     
     if(event.time == timeNow) {
         if(!event.repeating || event.days.includes(today) || event.days == "all") {
-            console.log("Executing event")
+            console.log("Executing event " + id)
             const leds = await ensureConnected()
             control.doAction(leds, event.action)
             if(!event.repeating) {
