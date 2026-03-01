@@ -1,4 +1,4 @@
-const { ensureConnected, disconnect, isConnected } = require("./functions/connection")
+const { ensureConnected, disconnect, isConnected, fireAndForget } = require("./functions/connection")
 const { port } = require("./config.json")
 const control = require("./functions/controlLeds")
 const events = require("./functions/events")
@@ -143,21 +143,31 @@ setInterval(async () => {
 const {setup, getAlert} = require("./functions/azakot")
 var alertInterval;
 setup().then(() => {
-  alertInterval = setInterval(() => getAlert(handleAlert), 1000);
+alertInterval = setInterval(async () => {
+  try {
+    await getAlert(handleAlert);
+  } catch (err) {
+    console.error("Alert polling error:", err);
+  }
+}, 1000);
 })
 
 const handleAlert = (category) => {
   switch (category) {
     case 1:
       //MISSILE!!!
+      fireAndForget({state: true, color: "red", brightness: 100})
     break;
 
     case 13:
       //safe to come out
+      fireAndForget({state: false})
     break;
 
     case 14:
       //missile alert soon
+      fireAndForget({state: true, color: "#ff66eb", brightness: 10})
+      //just a tiny bit of light to wake up
     break;
   }
 }

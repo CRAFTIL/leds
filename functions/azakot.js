@@ -9,19 +9,27 @@ const url =
 let currentRID = 0;
 
 async function fetchAlerts() {
-  const { data } = await axios.get(url, { timeout: 5000 });
+  const { data } = await axios.get(url, { timeout: 1000 });
   return data;
 }
 
 async function setup() {
-    let alerts = await fetchAlerts()
-    let latest = alerts[0]
-    currentRID = latest.rid
-    console.log("Alert system activated")
+  while (true) {
+    try {
+      let alerts = await fetchAlerts();
+      currentRID = alerts[0].rid;
+      console.log("Alert system activated");
+      return;
+    } catch (err) {
+      console.error("Setup failed, retrying in 5s:", err.message);
+      await new Promise(r => setTimeout(r, 5000));
+    }
+  }
 }
 
 async function getAlert(callback) {
     const alerts = await fetchAlerts()
+    if(!alerts?.length) return
     let event = alerts[0]
     //const newEvents = alerts.filter(a => a.rid > latestRid);
     if(event.rid > currentRID) {

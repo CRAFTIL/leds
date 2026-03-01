@@ -70,8 +70,15 @@ async function ensureConnected() {
   return leds;
 }
 
+async function fireAndForget(action) {   //action syntax: {state, color, brightness}
+  let leds = await ensureConnected()
+  control.doAction(leds, action)
+  //Will disconnect automatically after 5 minutes because of the timeout
+}
+
 module.exports = {
   ensureConnected,
   disconnect,
-  isConnected
+  isConnected,
+  fireAndForget
 };
