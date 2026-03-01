@@ -147,7 +147,7 @@ alertInterval = setInterval(async () => {
   try {
     await getAlert(handleAlert);
   } catch (err) {
-    console.error("Alert polling error:", err);
+    console.error("Alert polling error:", err.message);
   }
 }, 1000);
 })

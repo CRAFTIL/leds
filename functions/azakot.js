@@ -9,7 +9,7 @@ const url =
 let currentRID = 0;
 
 async function fetchAlerts() {
-  const { data } = await axios.get(url, { timeout: 1000 });
+  const { data } = await axios.get(url);
   return data;
 }
 
